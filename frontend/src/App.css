@@ -1,0 +1,685 @@
+/* =========================================================
+   WORKSPHERE APP LAYOUT
+   ========================================================= */
+
+.app-shell {
+  min-height: 100vh;
+  background: #f6f8fc;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.app-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+
+  width: 264px;
+  height: 100vh;
+
+  background: #101828;
+  color: #ffffff;
+
+  z-index: 1040;
+}
+
+.app-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  padding: 22px 16px 16px;
+}
+
+/* Brand */
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 4px 8px 28px;
+}
+
+.app-brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 12px;
+
+  background: #4f46e5;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  flex-shrink: 0;
+}
+
+.app-brand-text {
+  min-width: 0;
+}
+
+.app-brand-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.app-brand-subtitle {
+  margin-top: 3px;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.app-mobile-close {
+  display: none;
+
+  margin-left: auto;
+
+  width: 32px;
+  height: 32px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Navigation */
+
+.app-nav-section {
+  flex: 1;
+}
+
+.app-nav-label {
+  padding: 0 12px 10px;
+
+  color: #667085;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.app-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 46px;
+  padding: 0 12px;
+
+  border-radius: 10px;
+
+  color: #98a2b3;
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.app-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.app-nav-link.active {
+  background: #4f46e5;
+  color: #ffffff;
+
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
+}
+
+.app-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+
+  font-size: 17px;
+  opacity: 0.95;
+}
+
+/* Bottom */
+
+.app-sidebar-bottom {
+  padding-top: 16px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-user-card {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  margin-bottom: 14px;
+  padding: 10px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.app-avatar,
+.app-topbar-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  flex-shrink: 0;
+
+  background: #e0e7ff;
+  color: #4338ca;
+
+  font-weight: 700;
+}
+
+.app-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 13px;
+}
+
+.app-user-info {
+  min-width: 0;
+}
+
+.app-user-name {
+  overflow: hidden;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-user-email {
+  overflow: hidden;
+
+  margin-top: 2px;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-user-role {
+  display: inline-block;
+
+  margin-top: 6px;
+  padding: 3px 7px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: #c7d2fe;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.app-logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  min-height: 42px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+
+  background: transparent;
+  color: #d0d5dd;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.app-logout-button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.app-main {
+  min-width: 0;
+  min-height: 100vh;
+
+  margin-left: 264px;
+}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.app-topbar {
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 72px;
+
+  padding: 0 30px;
+
+  border-bottom: 1px solid #eaecf0;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  backdrop-filter: blur(8px);
+}
+
+.app-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-topbar-title {
+  color: #101828;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.app-topbar-subtitle {
+  margin-top: 2px;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+}
+
+.app-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-topbar-user-text {
+  text-align: right;
+}
+
+.app-topbar-user-name {
+  color: #344054;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-topbar-user-role {
+  margin-top: 2px;
+
+  color: #98a2b3;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.app-topbar-avatar {
+  width: 38px;
+  height: 38px;
+
+  font-size: 12px;
+}
+
+.app-menu-button {
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #e4e7ec;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #344054;
+
+  font-size: 18px;
+}
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.app-content {
+  min-height: calc(100vh - 72px);
+  padding: 28px;
+}
+
+.app-content-inner {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* =========================================================
+   PAGE-LEVEL BOOTSTRAP REFINEMENTS
+   ========================================================= */
+
+.app-content .container-fluid {
+  padding: 0;
+}
+
+.app-content h2 {
+  color: #101828;
+
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.app-content p.text-muted {
+  color: #667085 !important;
+}
+
+.app-content .card {
+  border: 1px solid #eaecf0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.03),
+    0 6px 20px rgba(16, 24, 40, 0.04);
+}
+
+.app-content .card-body {
+  padding: 20px;
+}
+
+/* Buttons */
+
+.app-content .btn {
+  min-height: 40px;
+
+  border-radius: 9px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-content .btn-primary {
+  border-color: #4f46e5;
+  background: #4f46e5;
+}
+
+.app-content .btn-primary:hover {
+  border-color: #4338ca;
+  background: #4338ca;
+}
+
+/* Forms */
+
+.app-content .form-label {
+  margin-bottom: 6px;
+
+  color: #344054;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.app-content .form-control,
+.app-content .form-select {
+  min-height: 42px;
+
+  border: 1px solid #d0d5dd;
+  border-radius: 9px;
+
+  color: #344054;
+
+  font-size: 13px;
+}
+
+.app-content .form-control:focus,
+.app-content .form-select:focus {
+  border-color: #818cf8;
+
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Tables */
+
+.app-content .table-responsive {
+  border-radius: 10px;
+}
+
+.app-content .table {
+  margin-bottom: 0;
+}
+
+.app-content .table thead th {
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #eaecf0;
+
+  background: #f9fafb;
+
+  color: #667085;
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.app-content .table tbody td {
+  padding: 13px 14px;
+
+  border-bottom: 1px solid #f2f4f7;
+
+  color: #344054;
+
+  font-size: 13px;
+}
+
+.app-content .table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.app-content .table-hover > tbody > tr:hover > * {
+  background: #f9fafb;
+}
+
+/* Badges */
+
+.app-content .badge {
+  border-radius: 999px;
+
+  padding: 5px 9px;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Alerts */
+
+.app-content .alert {
+  border-radius: 10px;
+
+  font-size: 13px;
+}
+
+/* Pagination */
+
+.app-content .pagination {
+  margin-bottom: 0;
+}
+
+.app-content .page-link {
+  min-width: 36px;
+  min-height: 36px;
+
+  border: 0;
+  border-radius: 8px !important;
+
+  color: #475467;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+.app-content .page-link:hover {
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.app-content .page-item.active .page-link {
+  background: #4f46e5;
+  color: #ffffff;
+}
+
+/* Modal */
+
+.app-content .modal-content {
+  border: 0;
+  border-radius: 16px;
+
+  box-shadow: 0 24px 60px rgba(16, 24, 40, 0.2);
+}
+
+.app-content .modal-header,
+.app-content .modal-footer {
+  border-color: #eaecf0;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+  .app-sidebar {
+    width: 264px;
+
+    transform: translateX(-100%);
+
+    transition: transform 0.22s ease;
+  }
+
+  .app-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .app-mobile-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .app-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1030;
+
+    border: 0;
+
+    background: rgba(16, 24, 40, 0.45);
+  }
+
+  .app-main {
+    margin-left: 0;
+  }
+
+  .app-menu-button {
+    display: inline-flex;
+  }
+
+  .app-topbar {
+    min-height: 64px;
+
+    padding: 0 16px;
+  }
+
+  .app-topbar-subtitle,
+  .app-topbar-user-text {
+    display: none;
+  }
+
+  .app-topbar-user {
+    gap: 0;
+  }
+
+  .app-content {
+    min-height: calc(100vh - 64px);
+    padding: 20px 16px;
+  }
+
+  .app-content h2 {
+    font-size: 21px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 575.98px) {
+  .app-content {
+    padding: 16px 12px;
+  }
+
+  .app-content .card-body {
+    padding: 14px;
+  }
+
+  .app-content .table {
+    min-width: 850px;
+  }
+}
