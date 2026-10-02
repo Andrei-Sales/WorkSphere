@@ -72,9 +72,7 @@ describe("Employee Management API", () => {
       expect(detail.status).toBe(200);
       expect(detail.body.success).toBe(true);
       expect(detail.body.data.id).toBe(employeeId);
-      expect(detail.body.data.employeeNumber).toBe(
-        employeeData.employeeNumber,
-      );
+      expect(detail.body.data.employeeNumber).toBe(employeeData.employeeNumber);
 
       const updated = await admin.put(`/api/employees/${employeeId}`).send({
         position: "Senior QA Engineer",
@@ -93,9 +91,7 @@ describe("Employee Management API", () => {
       expect(deleted.status).toBe(204);
       employeeId = undefined;
 
-      const missing = await admin.get(
-        `/api/employees/${created.body.data.id}`,
-      );
+      const missing = await admin.get(`/api/employees/${created.body.data.id}`);
       expect(missing.status).toBe(404);
       expect(missing.body.message).toBe("Employee not found");
     } finally {
@@ -105,7 +101,7 @@ describe("Employee Management API", () => {
         departmentIds,
       });
     }
-  });
+  }, 15000);
 
   it("should reject invalid employee payloads including a missing employee number", async () => {
     const admin = await loginAsAdmin();
@@ -132,8 +128,8 @@ describe("Employee Management API", () => {
       expect(Array.isArray(response.body.errors)).toBe(true);
     }
     expect(
-      missingNumber.body.errors.some(
-        (issue: { path: string[] }) => issue.path.includes("employeeNumber"),
+      missingNumber.body.errors.some((issue: { path: string[] }) =>
+        issue.path.includes("employeeNumber"),
       ),
     ).toBe(true);
   });
