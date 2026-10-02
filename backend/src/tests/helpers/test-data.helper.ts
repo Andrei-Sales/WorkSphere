@@ -62,15 +62,27 @@ export async function cleanupTestRecords(
     })),
   ];
 
+  let employeeCleanupFailed = false;
+
   for (const step of cleanupSteps) {
+    if (step.type !== "employee" && employeeCleanupFailed) {
+      break;
+    }
+
     try {
       const response = await step.remove();
 
       if (response.status !== 204) {
         failures.push(`${step.type} ${step.id}: HTTP ${response.status}`);
+        if (step.type === "employee") {
+          employeeCleanupFailed = true;
+        }
       }
     } catch {
       failures.push(`${step.type} ${step.id}: request failed`);
+      if (step.type === "employee") {
+        employeeCleanupFailed = true;
+      }
     }
   }
 

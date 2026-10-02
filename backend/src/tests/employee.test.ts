@@ -63,18 +63,20 @@ describe("Employee Management API", () => {
       );
       const created = await admin.post("/api/employees").send(employeeData);
       expect(created.status).toBe(201);
+      employeeId = created.body.data.id as number;
       expect(created.body.success).toBe(true);
       expect(created.body.data.employeeNumber).toBe(
         employeeData.employeeNumber,
       );
       expect(created.body.data.position).toBe(employeeData.position);
       expect(created.body.data.status).toBe("ACTIVE");
-      expect(created.body.data.userId).toBe(userIds[0]);
-      expect(created.body.data.departmentId).toBe(departmentIds[0]);
+      expect(created.body.data.userId).toBe(firstUser.body.data.id);
+      expect(created.body.data.departmentId).toBe(
+        firstDepartment.body.data.id,
+      );
       expect(created.body.data.department.name).toBe(firstDepartmentData.name);
       expect(created.body.data.user.email).toBe(firstUserData.email);
       expect(created.body.data.user).not.toHaveProperty("passwordHash");
-      employeeId = created.body.data.id as number;
 
       const [list, detail] = await Promise.all([
         admin.get("/api/employees"),
