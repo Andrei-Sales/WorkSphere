@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "vitest run",
+    "prisma:seed": "tsx prisma/seed.ts",
     "test:watch": "vitest",
     "postinstall": "prisma skills sync || exit 0"
   },
