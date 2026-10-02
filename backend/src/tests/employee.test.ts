@@ -20,24 +20,47 @@ describe("Employee Management API", () => {
     let employeeId: number | undefined;
 
     try {
-      const firstUser = await admin.post("/api/users").send(firstUserData);
-      expect(firstUser.status).toBe(201);
-      userIds.push(firstUser.body.data.id as number);
-      const secondUser = await admin.post("/api/users").send(secondUserData);
-      expect(secondUser.status).toBe(201);
-      userIds.push(secondUser.body.data.id as number);
-      const firstDepartment = await admin
-        .post("/api/departments")
-        .send(firstDepartmentData);
-      expect(firstDepartment.status).toBe(201);
-      departmentIds.push(firstDepartment.body.data.id as number);
-      const secondDepartment = await admin
-        .post("/api/departments")
-        .send(secondDepartmentData);
-      expect(secondDepartment.status).toBe(201);
-      departmentIds.push(secondDepartment.body.data.id as number);
+      const setupResults = await Promise.allSettled([
+        admin.post("/api/users").send(firstUserData).then((response) => {
+          expect(response.status).toBe(201);
+          userIds.push(response.body.data.id as number);
+          return response;
+        }),
+        admin.post("/api/users").send(secondUserData).then((response) => {
+          expect(response.status).toBe(201);
+          userIds.push(response.body.data.id as number);
+          return response;
+        }),
+        admin
+          .post("/api/departments")
+          .send(firstDepartmentData)
+          .then((response) => {
+            expect(response.status).toBe(201);
+            departmentIds.push(response.body.data.id as number);
+            return response;
+          }),
+        admin
+          .post("/api/departments")
+          .send(secondDepartmentData)
+          .then((response) => {
+            expect(response.status).toBe(201);
+            departmentIds.push(response.body.data.id as number);
+            return response;
+          }),
+      ]);
+      const [firstUser, secondUser, firstDepartment, secondDepartment] =
+        setupResults.map((result) => {
+          if (result.status === "rejected") {
+            throw result.reason;
+          }
 
-      const employeeData = createTestEmployeeData(userIds[0], departmentIds[0]);
+          return result.value;
+        });
+
+      const employeeData = createTestEmployeeData(
+        firstUser.body.data.id,
+        firstDepartment.body.data.id,
+      );
       const created = await admin.post("/api/employees").send(employeeData);
       expect(created.status).toBe(201);
       expect(created.body.success).toBe(true);
@@ -53,7 +76,10 @@ describe("Employee Management API", () => {
       expect(created.body.data.user).not.toHaveProperty("passwordHash");
       employeeId = created.body.data.id as number;
 
-      const list = await admin.get("/api/employees");
+      const [list, detail] = await Promise.all([
+        admin.get("/api/employees"),
+        admin.get(`/api/employees/${employeeId}`),
+      ]);
       expect(list.status).toBe(200);
       expect(list.body.success).toBe(true);
       expect(
@@ -68,7 +94,6 @@ describe("Employee Management API", () => {
         ),
       ).toBe(true);
 
-      const detail = await admin.get(`/api/employees/${employeeId}`);
       expect(detail.status).toBe(200);
       expect(detail.body.success).toBe(true);
       expect(detail.body.data.id).toBe(employeeId);
@@ -76,15 +101,17 @@ describe("Employee Management API", () => {
 
       const updated = await admin.put(`/api/employees/${employeeId}`).send({
         position: "Senior QA Engineer",
-        userId: userIds[1],
-        departmentId: departmentIds[1],
+        userId: secondUser.body.data.id,
+        departmentId: secondDepartment.body.data.id,
       });
       expect(updated.status).toBe(200);
       expect(updated.body.success).toBe(true);
       expect(updated.body.data.position).toBe("Senior QA Engineer");
-      expect(updated.body.data.userId).toBe(userIds[1]);
+      expect(updated.body.data.userId).toBe(secondUser.body.data.id);
       expect(updated.body.data.user.email).toBe(secondUserData.email);
-      expect(updated.body.data.departmentId).toBe(departmentIds[1]);
+      expect(updated.body.data.departmentId).toBe(
+        secondDepartment.body.data.id,
+      );
       expect(updated.body.data.department.name).toBe(secondDepartmentData.name);
 
       const deleted = await admin.delete(`/api/employees/${employeeId}`);
