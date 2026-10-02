@@ -2,13 +2,15 @@ pipeline {
     agent any
 
     triggers {
-        // Automatically check GitHub for changes approximately every 2 minutes.
+        // GitHub webhook triggers the build.
+        // Poll SCM remains as a fallback.
         pollSCM('H/2 * * * *')
     }
 
     environment {
         PORT = '3000'
 
+        // CI-only database
         DB_HOST = 'localhost'
         DB_PORT = '3308'
         DB_USER = 'root'
@@ -19,6 +21,7 @@ pipeline {
 
         FRONTEND_URL = 'http://localhost:5173'
 
+        // CI database container
         CI_DB_CONTAINER = 'worksphere-ci-mariadb'
     }
 
@@ -183,20 +186,71 @@ pipeline {
                 bat 'docker build -t worksphere-frontend:ci ./frontend'
             }
         }
+
+        stage('Deploy Application') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'worksphere-jwt-secret',
+                        variable: 'JWT_SECRET'
+                    )
+                ]) {
+                    bat '''
+                        echo ========================================
+                        echo Deploying WorkSphere application
+                        echo ========================================
+
+                        echo.
+                        echo Stopping existing WorkSphere containers...
+                        docker-compose down
+
+                        echo.
+                        echo Starting WorkSphere application...
+                        docker-compose up -d
+
+                        echo.
+                        echo Current containers:
+                        docker-compose ps
+
+                        echo.
+                        echo Waiting for frontend to become available...
+
+                        powershell -NoProfile -Command "$ready=$false; for ($i=0; $i -lt 30; $i++) { try { $response=Invoke-WebRequest -Uri 'http://localhost:5173' -UseBasicParsing -TimeoutSec 5; if ($response.StatusCode -eq 200) { $ready=$true; break } } catch {}; Start-Sleep -Seconds 2 }; if (-not $ready) { echo Frontend health check failed; docker-compose ps; docker-compose logs --tail=100; exit 1 }"
+
+                        echo.
+                        echo ========================================
+                        echo WorkSphere deployment successful!
+                        echo ========================================
+
+                        docker-compose ps
+                    '''
+                }
+            }
+        }
     }
 
     post {
         always {
-            bat 'docker rm -f %CI_DB_CONTAINER% 2>nul || exit /b 0'
+            echo 'Cleaning up CI database...'
+
+            bat '''
+                docker rm -f %CI_DB_CONTAINER% 2>nul || exit /b 0
+            '''
         }
 
         success {
-            echo 'WorkSphere CI completed successfully.'
+            echo '========================================'
+            echo 'WorkSphere CI/CD completed successfully.'
+            echo 'Application should be available at:'
+            echo 'http://localhost:5173'
+            echo '========================================'
         }
 
         failure {
-            echo 'WorkSphere CI failed. Check the stage above for details.'
+            echo '========================================'
+            echo 'WorkSphere CI/CD failed.'
+            echo 'Check the failed stage above.'
+            echo '========================================'
         }
     }
 }
-

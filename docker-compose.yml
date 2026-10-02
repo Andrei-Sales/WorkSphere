@@ -17,8 +17,7 @@ services:
       - worksphere-db-data:/var/lib/mysql
 
   backend:
-    build:
-      context: ./backend
+    image: worksphere-backend:ci
     container_name: worksphere-backend
     restart: unless-stopped
 
@@ -43,8 +42,7 @@ services:
       - "3000:3000"
 
   frontend:
-    build:
-      context: ./frontend
+    image: worksphere-frontend:ci
     container_name: worksphere-frontend
     restart: unless-stopped
 
