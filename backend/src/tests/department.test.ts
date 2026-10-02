@@ -2,7 +2,7 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
-import { loginAsAdmin, loginAsUser } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
 import {
   cleanupTestRecords,
   createTestDepartmentData,
@@ -10,9 +10,11 @@ import {
   createTestUserData,
 } from "./helpers/test-data.helper.js";
 
+const auth = createAuthSessions();
+
 describe("Department Management API", () => {
   it("should allow an admin to list, retrieve, create, update, and delete a department", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const data = createTestDepartmentData();
     let departmentId: number | undefined;
 
@@ -61,7 +63,7 @@ describe("Department Management API", () => {
   });
 
   it("should reject unauthenticated and normal-user department access", async () => {
-    const user = await loginAsUser();
+    const user = await auth.loginAsUser();
     const unauthenticated = await request(app).get("/api/departments");
     const list = await user.get("/api/departments");
     const create = await user
@@ -74,7 +76,7 @@ describe("Department Management API", () => {
   });
 
   it("should reject invalid IDs, missing names, and invalid names", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const invalidGet = await admin.get("/api/departments/invalid");
     const missingGet = await admin.get("/api/departments/2147483647");
     const invalidDelete = await admin.delete("/api/departments/invalid");
@@ -107,7 +109,7 @@ describe("Department Management API", () => {
   });
 
   it("should reject duplicate department names on create and update", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const firstData = createTestDepartmentData();
     const secondData = createTestDepartmentData();
     const ids: number[] = [];
@@ -139,7 +141,7 @@ describe("Department Management API", () => {
   });
 
   it("should prevent deletion of a department that has an assigned employee", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const userData = createTestUserData();
     const departmentData = createTestDepartmentData();
     let userId: number | undefined;

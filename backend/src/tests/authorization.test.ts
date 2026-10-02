@@ -2,11 +2,13 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
-import { loginAsAdmin, loginAsUser } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
 import {
   createTestDepartmentData,
   createTestEmployeeData,
 } from "./helpers/test-data.helper.js";
+
+const auth = createAuthSessions();
 
 describe("Authorization API", () => {
   it("should require authentication for department, employee, and dashboard routes", async () => {
@@ -26,7 +28,7 @@ describe("Authorization API", () => {
   });
 
   it("should deny normal users all department and employee management actions", async () => {
-    const user = await loginAsUser();
+    const user = await auth.loginAsUser();
     const department = createTestDepartmentData();
     const employee = createTestEmployeeData(1, 1);
     const responses = await Promise.all([
@@ -52,8 +54,8 @@ describe("Authorization API", () => {
   });
 
   it("should allow an admin to read another user's record", async () => {
-    const admin = await loginAsAdmin();
-    const user = await loginAsUser();
+    const admin = await auth.loginAsAdmin();
+    const user = await auth.loginAsUser();
     const adminProfile = await admin.get("/api/auth/me");
     const userProfile = await user.get("/api/auth/me");
 
@@ -72,8 +74,8 @@ describe("Authorization API", () => {
   });
 
   it("should allow a normal user to access their own record only", async () => {
-    const user = await loginAsUser();
-    const admin = await loginAsAdmin();
+    const user = await auth.loginAsUser();
+    const admin = await auth.loginAsAdmin();
     const [userProfile, adminProfile] = await Promise.all([
       user.get("/api/auth/me"),
       admin.get("/api/auth/me"),
@@ -98,7 +100,7 @@ describe("Authorization API", () => {
   });
 
   it("should reject invalid and nonexistent user IDs with their route contracts", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
 
     const invalid = await admin.get("/api/users/not-an-id");
     const nonexistent = await admin.get("/api/users/2147483647");
@@ -110,7 +112,7 @@ describe("Authorization API", () => {
   });
 
   it("should prevent an admin from deactivating or deleting their own account", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const profile = await admin.get("/api/auth/me");
     const ownId = profile.body.data.id as number;
 
@@ -132,7 +134,7 @@ describe("Authorization API", () => {
   });
 
   it("should allow a normal user to access the authenticated dashboard", async () => {
-    const user = await loginAsUser();
+    const user = await auth.loginAsUser();
     const response = await user.get("/api/dashboard");
 
     expect(response.status).toBe(200);

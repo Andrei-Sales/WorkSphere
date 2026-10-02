@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { loginAsAdmin } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
 import {
   cleanupTestRecords,
   createTestDepartmentData,
@@ -8,9 +8,11 @@ import {
   createTestUserData,
 } from "./helpers/test-data.helper.js";
 
+const auth = createAuthSessions();
+
 describe("Employee Management API", () => {
   it("should create, list, retrieve, update, and delete an employee", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const firstUserData = createTestUserData();
     const secondUserData = createTestUserData();
     const firstDepartmentData = createTestDepartmentData();
@@ -133,7 +135,7 @@ describe("Employee Management API", () => {
   }, 15000);
 
   it("should reject invalid employee payloads including a missing employee number", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const missingNumber = await admin.post("/api/employees").send({
       firstName: "Test",
       lastName: "Employee",
@@ -164,7 +166,7 @@ describe("Employee Management API", () => {
   });
 
   it("should reject invalid IDs and nonexistent employees", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const invalidGet = await admin.get("/api/employees/invalid");
     const missingGet = await admin.get("/api/employees/2147483647");
     const invalidUpdate = await admin
@@ -187,7 +189,7 @@ describe("Employee Management API", () => {
   });
 
   it("should validate user and department references and enforce uniqueness rules", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const firstUserData = createTestUserData();
     const secondUserData = createTestUserData();
     const unassignedUserData = createTestUserData();

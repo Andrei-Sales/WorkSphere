@@ -2,11 +2,13 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
-import { loginAsAdmin } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
 import {
   cleanupTestRecords,
   createTestUserData,
 } from "./helpers/test-data.helper.js";
+
+const auth = createAuthSessions();
 
 describe("User Management API", () => {
   it("should reject unauthenticated access to users", async () => {
@@ -85,7 +87,7 @@ describe("User Management API", () => {
   });
 
   it("should let an admin list and retrieve users without exposing password hashes", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const list = await admin.get("/api/users");
     const profile = await admin.get("/api/auth/me");
     const detail = await admin.get(`/api/users/${profile.body.data.id}`);
@@ -107,7 +109,7 @@ describe("User Management API", () => {
   });
 
   it("should create, update, and delete a test user using supported values", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const userData = createTestUserData(2);
     let userId: number | undefined;
 
@@ -160,7 +162,7 @@ describe("User Management API", () => {
   });
 
   it("should reject invalid user create and update payloads", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const invalidCreate = await admin.post("/api/users").send({
       email: "invalid-email",
       password: "short",
@@ -184,7 +186,7 @@ describe("User Management API", () => {
   });
 
   it("should reject duplicate emails on create and update", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const ownProfile = await admin.get("/api/auth/me");
     const userData = createTestUserData();
     let userId: number | undefined;
@@ -214,7 +216,7 @@ describe("User Management API", () => {
   });
 
   it("should reject invalid and nonexistent user IDs on admin writes", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const invalidUpdate = await admin
       .put("/api/users/invalid")
       .send({ firstName: "Valid" });

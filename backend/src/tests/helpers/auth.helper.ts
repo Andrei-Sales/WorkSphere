@@ -30,6 +30,40 @@ async function login(emailVariable: string, passwordVariable: string) {
   return agent;
 }
 
+export function createAuthSessions() {
+  let adminSession: Promise<ReturnType<typeof request.agent>> | undefined;
+  let userSession: Promise<ReturnType<typeof request.agent>> | undefined;
+
+  return {
+    loginAsAdmin() {
+      if (!adminSession) {
+        adminSession = login(
+          "TEST_ADMIN_EMAIL",
+          "TEST_ADMIN_PASSWORD",
+        ).catch((error: unknown) => {
+          adminSession = undefined;
+          throw error;
+        });
+      }
+
+      return adminSession;
+    },
+    loginAsUser() {
+      if (!userSession) {
+        userSession = login(
+          "TEST_USER_EMAIL",
+          "TEST_USER_PASSWORD",
+        ).catch((error: unknown) => {
+          userSession = undefined;
+          throw error;
+        });
+      }
+
+      return userSession;
+    },
+  };
+}
+
 export async function loginAsAdmin() {
   return login("TEST_ADMIN_EMAIL", "TEST_ADMIN_PASSWORD");
 }

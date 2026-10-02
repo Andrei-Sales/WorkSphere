@@ -2,7 +2,9 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
-import { loginAsAdmin, loginAsUser } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
+
+const auth = createAuthSessions();
 
 describe("Dashboard API", () => {
   it("should require authentication", async () => {
@@ -16,7 +18,7 @@ describe("Dashboard API", () => {
   });
 
   it("should return dashboard statistics and department counts to an admin", async () => {
-    const admin = await loginAsAdmin();
+    const admin = await auth.loginAsAdmin();
     const response = await admin.get("/api/dashboard");
     const statistics = response.body.data?.statistics;
     const departments = response.body.data?.departments;
@@ -55,7 +57,7 @@ describe("Dashboard API", () => {
   });
 
   it("should allow authenticated normal users to read the dashboard", async () => {
-    const user = await loginAsUser();
+    const user = await auth.loginAsUser();
     const response = await user.get("/api/dashboard");
 
     expect(response.status).toBe(200);

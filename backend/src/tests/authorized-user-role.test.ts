@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { loginAsUser } from "./helpers/auth.helper.js";
+import { createAuthSessions } from "./helpers/auth.helper.js";
+
+const auth = createAuthSessions();
 
 describe("Regular User Authorization", () => {
   it("should deny access to the user list", async () => {
-    const agent = await loginAsUser();
+    const agent = await auth.loginAsUser();
 
     const response = await agent.get("/api/users");
 
@@ -17,7 +19,7 @@ describe("Regular User Authorization", () => {
   });
 
   it("should deny user creation", async () => {
-    const agent = await loginAsUser();
+    const agent = await auth.loginAsUser();
 
     const response = await agent.post("/api/users").send({
       email: "unauthorized@worksphere.test",
@@ -36,7 +38,7 @@ describe("Regular User Authorization", () => {
   });
 
   it("should deny user update", async () => {
-    const agent = await loginAsUser();
+    const agent = await auth.loginAsUser();
 
     const response = await agent.put("/api/users/1").send({
       firstName: "Unauthorized",
@@ -51,7 +53,7 @@ describe("Regular User Authorization", () => {
   });
 
   it("should deny user deletion", async () => {
-    const agent = await loginAsUser();
+    const agent = await auth.loginAsUser();
 
     const response = await agent.delete("/api/users/1");
 
