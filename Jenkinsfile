@@ -1,6 +1,17 @@
 pipeline {
     agent any
 
+    environment {
+        PORT = '3000'
+
+        DB_HOST = 'localhost'
+        DB_PORT = '3306'
+        DB_USER = 'root'
+        DB_NAME = 'worksphere'
+
+        FRONTEND_URL = 'http://localhost:5173'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -19,8 +30,16 @@ pipeline {
 
         stage('Backend Test') {
             steps {
-                dir('backend') {
-                    bat 'npm test'
+                withCredentials([
+                    string(credentialsId: 'worksphere-jwt-secret', variable: 'JWT_SECRET'),
+                    string(credentialsId: 'worksphere-test-admin-email', variable: 'TEST_ADMIN_EMAIL'),
+                    string(credentialsId: 'worksphere-test-admin-password', variable: 'TEST_ADMIN_PASSWORD'),
+                    string(credentialsId: 'worksphere-test-user-email', variable: 'TEST_USER_EMAIL'),
+                    string(credentialsId: 'worksphere-test-user-password', variable: 'TEST_USER_PASSWORD')
+                ]) {
+                    dir('backend') {
+                        bat 'npm test'
+                    }
                 }
             }
         }
