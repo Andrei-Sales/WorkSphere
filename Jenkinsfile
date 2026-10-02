@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -67,6 +68,18 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Backend Docker Image') {
+            steps {
+                bat 'docker build -t worksphere-backend:ci ./backend'
+            }
+        }
+
+        stage('Build Frontend Docker Image') {
+            steps {
+                bat 'docker build -t worksphere-frontend:ci ./frontend'
+            }
+        }
     }
 
     post {
@@ -79,3 +92,4 @@ pipeline {
         }
     }
 }
+```

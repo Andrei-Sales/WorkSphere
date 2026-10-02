@@ -1,0 +1,58 @@
+services:
+
+  mariadb:
+    image: mariadb:10.4
+    container_name: worksphere-mariadb
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_DATABASE: worksphere
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - worksphere-db-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: worksphere-backend
+    restart: unless-stopped
+
+    depends_on:
+      - mariadb
+
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: root
+      DB_NAME: worksphere
+      DB_PASSWORD: ""
+
+      FRONTEND_URL: http://localhost:5173
+
+      JWT_SECRET: ${JWT_SECRET}
+
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: worksphere-frontend
+    restart: unless-stopped
+
+    depends_on:
+      - backend
+
+    ports:
+      - "5173:80"
+
+volumes:
+  worksphere-db-data:

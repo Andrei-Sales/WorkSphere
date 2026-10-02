@@ -1,6 +1,6 @@
 # Exclude GitHub configuration / agent files
 .github/
-
+.env
 # Backend
 backend/node_modules/
 backend/dist/
@@ -22,3 +22,5 @@ frontend/coverage/
 .idea/
 *.log
 .DS_Store
+/worksphere-xampp-backup.sql
+/worksphere-data-only.sql
