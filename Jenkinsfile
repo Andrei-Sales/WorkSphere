@@ -1,5 +1,11 @@
+```groovy
 pipeline {
     agent any
+
+    triggers {
+        // Automatically check GitHub for changes approximately every 2 minutes.
+        pollSCM('H/2 * * * *')
+    }
 
     environment {
         PORT = '3000'
@@ -57,11 +63,26 @@ pipeline {
         stage('Backend Migrate') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'worksphere-jwt-secret', variable: 'JWT_SECRET'),
-                    string(credentialsId: 'worksphere-test-admin-email', variable: 'TEST_ADMIN_EMAIL'),
-                    string(credentialsId: 'worksphere-test-admin-password', variable: 'TEST_ADMIN_PASSWORD'),
-                    string(credentialsId: 'worksphere-test-user-email', variable: 'TEST_USER_EMAIL'),
-                    string(credentialsId: 'worksphere-test-user-password', variable: 'TEST_USER_PASSWORD')
+                    string(
+                        credentialsId: 'worksphere-jwt-secret',
+                        variable: 'JWT_SECRET'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-admin-email',
+                        variable: 'TEST_ADMIN_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-admin-password',
+                        variable: 'TEST_ADMIN_PASSWORD'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-email',
+                        variable: 'TEST_USER_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-password',
+                        variable: 'TEST_USER_PASSWORD'
+                    )
                 ]) {
                     dir('backend') {
                         bat 'npx prisma migrate deploy'
@@ -73,10 +94,22 @@ pipeline {
         stage('Backend Seed') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'worksphere-test-admin-email', variable: 'TEST_ADMIN_EMAIL'),
-                    string(credentialsId: 'worksphere-test-admin-password', variable: 'TEST_ADMIN_PASSWORD'),
-                    string(credentialsId: 'worksphere-test-user-email', variable: 'TEST_USER_EMAIL'),
-                    string(credentialsId: 'worksphere-test-user-password', variable: 'TEST_USER_PASSWORD')
+                    string(
+                        credentialsId: 'worksphere-test-admin-email',
+                        variable: 'TEST_ADMIN_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-admin-password',
+                        variable: 'TEST_ADMIN_PASSWORD'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-email',
+                        variable: 'TEST_USER_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-password',
+                        variable: 'TEST_USER_PASSWORD'
+                    )
                 ]) {
                     dir('backend') {
                         bat 'npm run prisma:seed'
@@ -88,11 +121,26 @@ pipeline {
         stage('Backend Test') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'worksphere-jwt-secret', variable: 'JWT_SECRET'),
-                    string(credentialsId: 'worksphere-test-admin-email', variable: 'TEST_ADMIN_EMAIL'),
-                    string(credentialsId: 'worksphere-test-admin-password', variable: 'TEST_ADMIN_PASSWORD'),
-                    string(credentialsId: 'worksphere-test-user-email', variable: 'TEST_USER_EMAIL'),
-                    string(credentialsId: 'worksphere-test-user-password', variable: 'TEST_USER_PASSWORD')
+                    string(
+                        credentialsId: 'worksphere-jwt-secret',
+                        variable: 'JWT_SECRET'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-admin-email',
+                        variable: 'TEST_ADMIN_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-admin-password',
+                        variable: 'TEST_ADMIN_PASSWORD'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-email',
+                        variable: 'TEST_USER_EMAIL'
+                    ),
+                    string(
+                        credentialsId: 'worksphere-test-user-password',
+                        variable: 'TEST_USER_PASSWORD'
+                    )
                 ]) {
                     dir('backend') {
                         bat 'npm test'
@@ -152,3 +200,4 @@ pipeline {
         }
     }
 }
+```
